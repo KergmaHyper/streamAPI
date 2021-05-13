@@ -1,22 +1,46 @@
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 public class Main {
 
     public static void main(String[] args) {
-        ArrayList<String> otd = new ArrayList<>();
+    Stream<Car> store1 = Stream.of(new Car("WV Polo",27000),
+                                   new Car("AUDI A7",60000),
+                                   new Car("Hnd SantaFe",55000),
+                                   new Car("Chvrlt Tacuma",23000));
 
-        otd.add("feo");
-        otd.add("ek");
-        otd.add("it");
-        otd.add("inkass");
-        otd.add("buh");
-        otd.add("zahist");
-        Collections.addAll(otd,"bud","mmsb","okr","corp","bezpeka","HR","back","valut","finmon");
+    store1.filter(s->s.getPrice()<30000).forEach(s->System.out.printf("30000 > %s ; ",s.getName()));
+    store1.close();
+    store1 = Stream.of(new Car("WV Polo",27000),
+                new Car("AUDI A7",60000),
+                new Car("Hnd SantaFe",55000),
+                new Car("Chvrlt Tacuma",23000));
+    store1.map(x->x.getName()+" "+x.getPrice()).forEach(s->System.out.println(s));
+    store1.close();
+    store1 = Stream.of(new Car("WV Polo",27000),
+                new Car("AUDI A7",60000),
+                new Car("Hnd SantaFe",55000),
+                new Car("Chvrlt Tacuma",23000));
+    store1.flatMap(c->Stream.of(
+            String.format(c.getName()+": "+c.getPrice()),
+            String.format(c.getName()+"+2000: "+(int)(c.getPrice()+2000))
+    )).forEach(s->System.out.println(s));
 
-        otd.stream().filter(s->s.length()<3).sorted().forEach(s->System.out.println(s));
-
+    //store1.filter(s->s.getPrice()<30000).forEach(s->System.out.printf("30000 > %s ",s.getName()));
 
     }
+}
+
+class Car {
+    private String name;
+    private int price;
+
+    Car(String name, int price){this.name=name; this.price=price;}
+
+    public String getName(){return name;}
+    public int getPrice(){return price;}
+
 }
