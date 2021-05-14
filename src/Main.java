@@ -1,5 +1,6 @@
 import java.util.*;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
@@ -11,7 +12,7 @@ public class Main {
 
         ArrayList<Car> catalog = new ArrayList<Car>();
         catalog.add( new Car("WV","Polo",27000));
-
+        catalog.add( new Car("ZAZ","Lanos",5000));
         catalog.add( new Car("AUDI","A7",60000));
         catalog.add( new Car("Huinday","SantaFe",47000));
         catalog.add( new Car("Chvrlt","Tacuma",23000));
@@ -51,10 +52,27 @@ public class Main {
                 sorted(new CarVendorComparator()).
         forEach(s->System.out.println(s.getVendor()+" "+s.getModel()+" "+s.getPrice()));
 */
-      Optional<Car> maxPrice = arCar3.stream().max(new CarVendorComparator());
+     /* Optional<Car> maxPrice = arCar3.stream().max(new CarVendorComparator());
       System.out.println(maxPrice.get().getVendor() +" " +maxPrice.get().getModel()+
               " "+maxPrice.get().getPrice());
+*/
 
+        Map<String, List<Car>> carVendors =
+                Stream.concat(Stream.concat(catalog.stream(),arCar3.stream()),car2).
+                collect(Collectors.groupingBy(s->s.getVendor()));
+
+        for( Map.Entry<String,List<Car>> ptr : carVendors.entrySet() ){
+            System.out.println("VENDOR: "+ptr.getKey());
+            for ( Car c : ptr.getValue() ){
+                 System.out.println(c.getModel()+" "+c.getPrice());
+            }
+
+            int i = ptr.getValue().stream()
+                    .reduce(0, (x,y)->{ return x+y.getPrice();} ,(x,y)->x+y );
+            System.out.println("Total : "+i);
+            System.out.println("------------------------------------------------");
+
+        }
 
 
 
