@@ -1,46 +1,114 @@
-import java.util.ArrayList;
+import java.util.*;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.stream.Stream;
 
 public class Main {
 
     public static void main(String[] args) {
-    Stream<Car> store1 = Stream.of(new Car("WV Polo",27000),
-                                   new Car("AUDI A7",60000),
-                                   new Car("Hnd SantaFe",55000),
-                                   new Car("Chvrlt Tacuma",23000));
+      //  ArrayList<String> cities = new ArrayList<String>();
+      //  Collections.addAll(cities, "Париж", "Лондон", "Мадрид");
+        Car car1 = new Car("ZAZ","Slavuta",5000);
 
-    store1.filter(s->s.getPrice()<30000).forEach(s->System.out.printf("30000 > %s ; ",s.getName()));
-    store1.close();
-    store1 = Stream.of(new Car("WV Polo",27000),
-                new Car("AUDI A7",60000),
-                new Car("Hnd SantaFe",55000),
-                new Car("Chvrlt Tacuma",23000));
-    store1.map(x->x.getName()+" "+x.getPrice()).forEach(s->System.out.println(s));
-    store1.close();
-    store1 = Stream.of(new Car("WV Polo",27000),
-                new Car("AUDI A7",60000),
-                new Car("Hnd SantaFe",55000),
-                new Car("Chvrlt Tacuma",23000));
-    store1.flatMap(c->Stream.of(
-            String.format(c.getName()+": "+c.getPrice()),
-            String.format(c.getName()+"+2000: "+(int)(c.getPrice()+2000))
-    )).forEach(s->System.out.println(s));
+        ArrayList<Car> catalog = new ArrayList<Car>();
+        catalog.add( new Car("WV","Polo",27000));
 
-    //store1.filter(s->s.getPrice()<30000).forEach(s->System.out.printf("30000 > %s ",s.getName()));
+        catalog.add( new Car("AUDI","A7",60000));
+        catalog.add( new Car("Huinday","SantaFe",47000));
+        catalog.add( new Car("Chvrlt","Tacuma",23000));
+        catalog.add( new Car("Chvrlt","Aveo",15000));
+        catalog.add( new Car("Chvrlt","Lacceti",25000));
+        catalog.add( new Car("Chvrlt","Camaro",45000));
+        catalog.add(car1);
+        catalog.add( new Car("WV","Passat",37000));
+        catalog.add( new Car("WV","Tiguan",62000));
+
+
+       /* catalog.stream().
+                sorted(new CarPriceUpComparator()).
+                dropWhile(s->s.getPrice()<20000).
+                takeWhile(s->s.getPrice()<40000).
+                forEach(s->System.out.println(s.getVendor()+" "+s.getModel()+" "+s.getPrice()));
+
+*/
+
+        Stream<Car> car2=Stream.of( new Car("ZAZ","Lanos",9000)
+                                    ,new Car("ZAZ","Tavria Nova",5000)
+                                    ,new Car("ZAZ","Sens",7500)
+                                    ,new Car("ZAZ","Slavuta",6500)
+                                    ,new Car("AUDI","TT",75000)
+        );
+
+        ArrayList<Car> arCar3 = new ArrayList<>();
+        arCar3.addAll(Arrays.asList( new Car("VAZ","Niva",12000)
+                                    ,new Car("VAZ","Priora",14000)
+                                    ,new Car("VAZ","Kalina",11000)
+        ));
+
+       /* Stream.concat(
+         arCar3.stream().sorted(new CarPriceUpComparator()).takeWhile(s->s.getPrice()<40000),
+         car2.sorted(new CarPriceUpComparator()).dropWhile(s->s.getPrice()<6000)
+        ).
+                sorted(new CarVendorComparator()).
+        forEach(s->System.out.println(s.getVendor()+" "+s.getModel()+" "+s.getPrice()));
+*/
+      Optional<Car> maxPrice = arCar3.stream().max(new CarVendorComparator());
+      System.out.println(maxPrice.get().getVendor() +" " +maxPrice.get().getModel()+
+              " "+maxPrice.get().getPrice());
+
+
+
 
     }
 }
 
+
+
+
 class Car {
-    private String name;
+    private String model;
+    private String vendor;
     private int price;
 
-    Car(String name, int price){this.name=name; this.price=price;}
+    Car(String vendor, String model, int price){
+        this.model=model;
+        this.vendor=vendor;
+        this.price=price;}
 
-    public String getName(){return name;}
+    public String getModel(){return model;}
+    public String getVendor(){return vendor;}
     public int getPrice(){return price;}
 
 }
+class CarVendorComparator implements Comparator<Car>{
+    @Override
+    public int compare(Car car1, Car car2) {
+        return car1.getVendor().compareToIgnoreCase(car2.getVendor());
+    }
+}
+class CarModelComparator implements Comparator<Car>{
+    @Override
+    public int compare(Car car1, Car car2) {
+        return car1.getModel().compareToIgnoreCase(car2.getModel());
+    }
+}
+class CarPriceUpComparator implements Comparator<Car> {
+    @Override
+    public int compare(Car car1, Car car2) {
+        int calc = car1.getPrice() - car2.getPrice();
+        int ret = 0;
+        if (calc > 0) ret = 1;
+        if (calc < 0) ret = -1;
+        return ret;
+    }
+}
+    class CarPriceDownComparator implements Comparator<Car>{
+        @Override
+        public int compare(Car car1, Car car2) {
+            int calc = car2.getPrice() - car1.getPrice();
+            int ret=0;
+            if (calc > 0) ret = 1;
+            if (calc < 0) ret = -1;
+            return ret;
+        }
+
+    }
