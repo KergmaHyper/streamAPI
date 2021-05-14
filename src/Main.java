@@ -57,12 +57,21 @@ public class Main {
               " "+maxPrice.get().getPrice());
 */
 
-        Map<String, List<Car>> carVendors =
-                Stream.concat(Stream.concat(catalog.stream(),arCar3.stream()),car2).
-                collect(Collectors.groupingBy(s->s.getVendor()));
+        //Map<String, List<Car>> carVendors =
+        Map<Boolean, List<Car>> carVendorsBool =
+                Stream.concat(Stream.concat(catalog.stream(),arCar3.stream()),car2)
+                .collect(Collectors
+                //.groupingBy(s->s.getVendor())
+                .partitioningBy( x->x.getVendor().equals("ZAZ"))
+                );
 
-        for( Map.Entry<String,List<Car>> ptr : carVendors.entrySet() ){
-            System.out.println("VENDOR: "+ptr.getKey());
+
+        //for( Map.Entry<String,List<Car>> ptr : carVendors.entrySet() ){
+        for( Map.Entry<Boolean,List<Car>> ptr : carVendorsBool.entrySet() ){
+            if (ptr.getKey()){
+                System.out.println("VENDOR: ZAZ");}
+                else{System.out.println("VENDOR: NO ZAZ");};
+
             for ( Car c : ptr.getValue() ){
                  System.out.println(c.getModel()+" "+c.getPrice());
             }
