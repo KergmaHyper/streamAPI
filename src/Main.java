@@ -1,6 +1,6 @@
 import java.util.*;
 
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
@@ -15,8 +15,8 @@ public class Main {
 
 
 
-    Optional<Integer> res = str1.parallel().reduce((x,y)->(x+y));
-    System.out.println(res.get());
+    Optional<Integer> res = str1.parallel().reduce(Integer::sum);
+        res.ifPresent(System.out::println);
 
 
 
